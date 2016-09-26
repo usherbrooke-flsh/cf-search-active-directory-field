@@ -17,6 +17,9 @@ class cfSearchActiveDirectory {
         add_action('wp_footer', array($this, 'addAjaxUrlJS')); // Write our JS below here
     }
 
+    /**
+     * Add ajaxUrl as a JS variable in the page
+     */
     public function addAjaxUrlJS() {
         ?>
         <script type="text/javascript">
@@ -28,8 +31,9 @@ class cfSearchActiveDirectory {
     }
 
     /**
-     * Search
+     * Search LDAP / AD
      * @param string $search_string
+     * @return array
      */
     public function searchAD($search_string='') {
         $isAjax = empty($search_string) && !empty($_POST);
@@ -55,9 +59,6 @@ class cfSearchActiveDirectory {
                 $search_string = (empty($search_string) ? $_POST['search_string'] : $search_string);
                 foreach($adConfig['whereToSearch'] as $wts) {
                     $filterStr .= "({$wts}=*{$search_string}*)";
-//                    foreach($filterArray as $fa) {
-//                        $filterStr .= "({$wts}=*{$fa}*)";
-//                    }
                 }
                 $filterStr = "(|{$filterStr})";
 
@@ -73,11 +74,6 @@ class cfSearchActiveDirectory {
                             for ($i=0; $i<$info['count']; $i++) {
                                 $data['message'] = sprintf('%d résultat%2$s trouvé%2$s', $info['count'], (($info['count'] > 1) ? 's' : ''));
                                 $data['list'][$i] = array();
-//                                foreach ($info[$i] as $k => $v) {
-//                                    if (!is_numeric($k)) {
-//                                        $data['list'][$i][$k] = $v[0];
-//                                    }
-//                                }
                                 $name = $info[$i]['displayname'][0];
                                 $uid = $info[$i]['uid'][0];
                                 $mail = $info[$i]['mail'][0];
@@ -104,6 +100,24 @@ class cfSearchActiveDirectory {
         } else {
             return $data;
         }
+    }
+
+    /**
+     * Find the Caldera Field ID from the slug
+     *
+     * @param $fields array
+     * @param $fieldSlug string
+     * @return string|bool
+     */
+    public static function searchFieldIdFromSlug($fields, $fieldSlug) {
+        if(is_array($fields)) {
+            foreach($fields as $field) {
+                if($field['slug'] == $fieldSlug) {
+                    return $field['ID'];
+                }
+            }
+        }
+        return false;
     }
 }
 

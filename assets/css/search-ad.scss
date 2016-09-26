@@ -72,6 +72,8 @@
           width: 100%;
           padding: 10px 15px;
           margin: 0;
+          line-height: 1.1em;
+          text-decoration: none;
 
           span {
             display: block;
@@ -79,13 +81,18 @@
         }
       }
 
+      li:hover {
+        background: darken(#e0e0e0, 20%);
+      }
+
       li:nth-child(2n) {
         background: #f0f0f0;
       }
 
-      li:hover{
-
+      li:nth-child(2n):hover {
+        background: darken(#f0f0f0, 20%);
       }
+
     }
   }
 

@@ -37,7 +37,7 @@
         var that = $(this);
         delayAction(function() {
             doSearch(that);
-        }, 750);
+        }, 500);
     })
     .focus(function(){
         var results = $(this).parent().next('.search-active-directory-results');
@@ -56,10 +56,26 @@
         }
     });
 
-    $('.search-active-directory-results ul a').click(function(e) {
+    $('.search-active-directory-results').on('click', 'ul a', function(e) {
         e.preventDefault();
 
-        console.log($(this).data('mail'));
+        var results = $(this).parents('.search-active-directory-results'),
+            keys = results.data('keys');
+        if((keys != '') && (typeof keys != 'undefined')) {
+            keys = keys.split(';');
+            var fieldad = '',
+                fieldcf = '',
+                valad = '';
+            for(var i in keys) {
+                fieldad = results.data(keys[i]+'fieldad');
+                fieldcf = results.data(keys[i]+'fieldcfid');
+                valad = $(this).data(fieldad);
+                if($('#'+fieldcf).length) {
+                    $('#' + fieldcf).val(valad);
+                }
+            }
+            results.fadeOut(250);
+        }
 
         return false;
     });
